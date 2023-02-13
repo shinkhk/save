@@ -1,0 +1,3 @@
+[aaa] entered
+[aaa]hi
+[aaa]hahaha
