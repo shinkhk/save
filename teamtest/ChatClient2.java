@@ -39,13 +39,15 @@ implements ActionListener, Runnable {
 	Socket sock;
 	BufferedReader in;
 	PrintWriter out;
+	public String Rn;
 	String listTitle = "*******대화자명단*******";
 	boolean flag = false;
 
 	public ChatClient2(String room) {
 		setSize(450, 500);
+		Rn = room;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setTitle(room);
+		setTitle(Rn);
 		JPanel p1 = new JPanel();
 		p1.add(new Label("Host", Label.RIGHT));
 		p1.add(tf1 = new JTextField("127.0.0.1", 10));
@@ -122,7 +124,7 @@ implements ActionListener, Runnable {
 				list.add(st.nextToken());
 			}
 		}else if(cmd.equals(ChatProtocol2.CHATALL)||
-				cmd.equals(ChatProtocol2.CHAT)) {
+				cmd.equals(ChatProtocol2.ROOM)) {
 			area.append(data+"\n");
 		}else if(cmd.equals(ChatProtocol2.MESSAGE)) {
 			//data => ccc;오늘 머해?
@@ -182,9 +184,9 @@ implements ActionListener, Runnable {
 							ChatProtocol2.MODE+str);
 				}else {
 					/*귓속말 채팅*/
-					String id = list.getSelectedItem();
-					sendMessage(ChatProtocol2.CHAT+
-							ChatProtocol2.MODE+id+";"+str);
+					String roomid = Rn;
+					sendMessage(ChatProtocol2.ROOM+
+							ChatProtocol2.MODE+roomid+";"+str);
 				}
 				tf3.setText("");
 				tf3.requestFocus();

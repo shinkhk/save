@@ -74,11 +74,11 @@ class LoginAWT3 extends JFrame implements ActionListener {
 				}
 				id = idTf.getText().trim();
 				out.println(ChatProtocol3.ID+ChatProtocol3.MODE+
-						id+";"+pwTf.getText().trim());
+						id+";"+pwTf.getText().trim()); // ID:aaa;1234
 				String line = in.readLine();
 				int idx = line.indexOf(ChatProtocol3.MODE);
-				String cmd = line.substring(0, idx);
-				String data = line.substring(idx+1);
+				String cmd = line.substring(0, idx);	// ID
+				String data = line.substring(idx+1);	// T
 				//cmd : ID, data = T, F, C
 				if(cmd.equals(ChatProtocol3.ID)) {
 					if(data.equals("F")) {

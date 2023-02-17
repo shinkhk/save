@@ -113,7 +113,7 @@ public class ChatServer3 {
 			int idx = line.indexOf(ChatProtocol3.MODE);
 			String cmd = line.substring(0, idx); 
 			String data = line.substring(idx + 1); 
-			//ID:aaa;1234
+			//ID:aaa;1234 -> AWT3 에서 로그인 버튼을 누를 때 서버로 보내진거
 			if (cmd.equals(ChatProtocol3.ID)) {
 				idx = data.indexOf(';');
 				cmd = data.substring(0, idx);//aaa		

@@ -9,9 +9,13 @@ import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+
+
 public class ActionEventEx2 extends MFrame
 implements ActionListener{
-
+	
+	public String roomname;
+	
 	List list;
 	Button b[] = new Button[4];
 	String lab[] = {"추가","지우기","답변하기","종료"};
@@ -57,7 +61,7 @@ implements ActionListener{
 			}
 			list.remove(idx);
 		}else if(cmd.equals(lab[2])) {
-			String roomname = list.getSelectedItem();
+			roomname = list.getSelectedItem();
 			new ChatClient2(roomname);
 		}else if(cmd.equals(lab[3])) {
 			System.exit(0);

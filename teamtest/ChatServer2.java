@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
-
+import teamtest.ChatClient2;
 public class ChatServer2 {
 	
 	public static final int PORT = 8002;
@@ -122,7 +122,7 @@ public class ChatServer2 {
 			}else if(cmd.equals(ChatProtocol2.CHATALL)) {
 				sendAllMessage(ChatProtocol2.CHATALL+
 						ChatProtocol2.MODE+"["+id+"]"+data);
-			}else if(cmd.equals(ChatProtocol2.CHAT)) {
+			}else if(cmd.equals(ChatProtocol2.ROOM)) {
 				//CHAT:bbb;밥먹자
 				idx = data.indexOf(';');
 				cmd = data.substring(0, idx);//bbb
@@ -131,14 +131,14 @@ public class ChatServer2 {
 				ClientThread2 ct = findClient(cmd);
 				if(ct!=null) {
 					//bbb에게 전송
-					ct.sendMessage(ChatProtocol2.CHAT+
+					ct.sendMessage(ChatProtocol2.ROOM+
 							ChatProtocol2.MODE+"["+id+"(S)]"+data);
 					//자신에게 전송
-					sendMessage(ChatProtocol2.CHAT+
+					sendMessage(ChatProtocol2.ROOM+
 							ChatProtocol2.MODE+"["+id+"(S)]"+data);
 				}else {
 					//자신에게 보내는 메세지
-					sendMessage(ChatProtocol2.CHAT+
+					sendMessage(ChatProtocol2.ROOM+
 							ChatProtocol2.MODE+"["+cmd+"]님이 접속자가 아닙니다");
 				}
 				
@@ -153,7 +153,7 @@ public class ChatServer2 {
 					ct.sendMessage(ChatProtocol2.MESSAGE+
 							ChatProtocol2.MODE+id+";"+data);
 				}else {
-					sendMessage(ChatProtocol2.CHAT+
+					sendMessage(ChatProtocol2.ROOM+
 							ChatProtocol2.MODE+"["+cmd+"]님이 접속자가 아닙니다");
 				}
 			}
