@@ -218,6 +218,7 @@ implements ActionListener, Runnable{
 					System.out.println("채팅한 방번호 = " + i);
 					QR[i].addText("*********OWNER EXIT*********");
 					QR[i].addText("Leave the room in 3 seconds");
+					sendMessage(ChatProtocol2.DELETUSER+ChatProtocol2.MODE+QR[i].roomname);
 					try {
 						QR[i].addText("3");
 						Thread.sleep(1000);
@@ -225,7 +226,6 @@ implements ActionListener, Runnable{
 						Thread.sleep(1000);
 						QR[i].addText("1");
 						Thread.sleep(1000);
-						sendMessage(ChatProtocol2.DELETUSER+ChatProtocol2.MODE+QR[i].roomname);
 						QR[i].dispose();
 						QR[i] = null;
 					} catch (InterruptedException e) {
