@@ -22,10 +22,10 @@ public class MChatServer {
 		} catch (Exception e) {
 			//e.printStackTrace();
 			System.err.println("Error in Server");
-			System.exit(1);//ºñÁ¤»óÀûÀÎ Á¾·á
+			System.exit(1);//ë¹„ì •ìƒì ì¸ ì¢…ë£Œ
 		}
 		System.out.println("****Chat Server 2.0****");
-		System.out.println("*Å¬¶óÀÌ¾ğÆ® Á¢¼ÓÀ» ±â´Ù¸®°í ÀÖ½À´Ï´Ù");
+		System.out.println("*í´ë¼ì´ì–¸íŠ¸ ì ‘ì†ì„ ê¸°ë‹¤ë¦¬ê³  ìˆìŠµë‹ˆë‹¤");
 		System.out.println("**********************");
 		try {
 			while(true) {
@@ -51,7 +51,7 @@ public class MChatServer {
 		vc.remove(ct);
 	}
 	
-	//Á¢¼ÓµÈ ¸ğµç id ¸®½ºÆ® ¸®ÅÏ ex)aaa;bbb;È«±æµ¿;°­È£µ¿;
+	//ì ‘ì†ëœ ëª¨ë“  id ë¦¬ìŠ¤íŠ¸ ë¦¬í„´ ex)aaa;bbb;í™ê¸¸ë™;ê°•í˜¸ë™;
 	public String getIdList() {
 		String list = "";
 		for (int i = 0; i < vc.size(); i++) {
@@ -61,12 +61,12 @@ public class MChatServer {
 		return list;
 	}
 	
-	//¸Å°³º¯¼ö id°ªÀ¸·Î ClientThread2¸¦ °Ë»ö
+	//ë§¤ê°œë³€ìˆ˜ idê°’ìœ¼ë¡œ ClientThread2ë¥¼ ê²€ìƒ‰
 	public ClientThread2 findClient(String id) {
 		ClientThread2 ct = null;
 		for (int i = 0; i < vc.size(); i++) {
 			ct = vc.get(i);
-			if(ct.id.equals(id))//¸Å°³º¯¼öÀÇ id¿Í ctÀÇ id°¡ µ¿ÀÏ ÇÏ´Ù¸é.
+			if(ct.id.equals(id))//ë§¤ê°œë³€ìˆ˜ì˜ idì™€ ctì˜ idê°€ ë™ì¼ í•˜ë‹¤ë©´.
 				break;
 		}
 		return ct;
@@ -88,7 +88,7 @@ public class MChatServer {
 				in = new BufferedReader(
 						new InputStreamReader(sock.getInputStream()));
 				out = new PrintWriter(sock.getOutputStream(),true);
-				System.out.println(sock.toString() +" Á¢¼ÓµÊ...");
+				System.out.println(sock.toString() +" ì ‘ì†ë¨...");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -106,17 +106,17 @@ public class MChatServer {
 				}
 			} catch (Exception e) {
 				removeClient(this);
-				System.err.println(sock+"["+ id +"] ²÷¾îÁü...");
+				System.err.println(sock+"["+ id +"] ëŠì–´ì§...");
 			}
 		}
 		
 		public void routine(String line) {
-			//EX)CHATALL:¿À´ÃÀº ¸ñ¿äÀÏÀÔ´Ï´Ù.
+			//EX)CHATALL:ì˜¤ëŠ˜ì€ ëª©ìš”ì¼ì…ë‹ˆë‹¤.
 			System.out.println("line:" + line);
 			int idx = line.indexOf(ChatProtocol2.MODE);
 			String cmd = line.substring(0, idx);//CHATALL
-			String data = line.substring(idx+1);//¿À´ÃÀº ¸ñ¿äÀÏÀÔ´Ï´Ù.
-			if(cmd.equals(ChatProtocol2.ENTERROOM)) { // ENTERROOM:¹æÀÌ¸§:À¯Àú¸í;ÀÔÀåÇÏ¿´½À´Ï´Ù -> Ã¤ÆÃ¹æ ÀÔÀå ¸Ş¼¼Áö, µé¾î¿ÍÀÖ´Â À¯Àú¸í °ü¸®
+			String data = line.substring(idx+1);//ì˜¤ëŠ˜ì€ ëª©ìš”ì¼ì…ë‹ˆë‹¤.
+			if(cmd.equals(ChatProtocol2.ENTERROOM)) { // ENTERROOM:ë°©ì´ë¦„:ìœ ì €ëª…;ì…ì¥í•˜ì˜€ìŠµë‹ˆë‹¤ -> ì±„íŒ…ë°© ì…ì¥ ë©”ì„¸ì§€, ë“¤ì–´ì™€ìˆëŠ” ìœ ì €ëª… ê´€ë¦¬
 				sendAllMessage(line);
 				int idx1 = data.indexOf(ChatProtocol2.MODE);
 				String Rn = data.substring(0,idx1);
@@ -126,48 +126,48 @@ public class MChatServer {
 				String resetUser = "";
 				for(int i = 0;roomUser.length > i; i++) {
 					if(roomUser[i] == null) {
-						roomUser[i] = Rn+ChatProtocol2.MODE+Un;//¹æÀÌ¸§:À¯Àú¸í
+						roomUser[i] = Rn+ChatProtocol2.MODE+Un;//ë°©ì´ë¦„:ìœ ì €ëª…
 						break;
 					}
 				}
 				for(int i = 0;roomUser.length > i; i++) {
 					if(roomUser[i] != null) {
-						resetUser += roomUser[i]+";"; //¹æÀÌ¸§:À¯Àú¸í;¹æÀÌ¸§:À¯Àú¸í;¹æÀÌ¸§:À¯Àú¸í;...;
+						resetUser += roomUser[i]+";"; //ë°©ì´ë¦„:ìœ ì €ëª…;ë°©ì´ë¦„:ìœ ì €ëª…;ë°©ì´ë¦„:ìœ ì €ëª…;...;
 					}
 				}
 				System.out.println(resetUser);
 				sendAllMessage(ChatProtocol2.ADDUSER+ChatProtocol2.MODE+Rn+ChatProtocol2.MODE+resetUser);
-				//ADDUSER:¹æÀÌ¸§:¹æÀÌ¸§:À¯Àú¸í;¹æÀÌ¸§:À¯Àú¸í;¹æÀÌ¸§:À¯Àú¸í;...;
-			}else if(cmd.equals(ChatProtocol2.CHAT)) { // CHAT:¹æÀÌ¸§:À¯Àú¸í;Ã¤ÆÃ³»¿ë -> Ã¤ÆÃ¹æ¿¡¼­ÀÇ Ã¤ÆÃÀ» °ü¸®
-				//cmd = CHAT | data = ¹æÀÌ¸§:À¯Àú¸í;Ã¤ÆÃ³»¿ë
-				System.out.println("CHATÁøÀÔ");
+				//ADDUSER:ë°©ì´ë¦„:ë°©ì´ë¦„:ìœ ì €ëª…;ë°©ì´ë¦„:ìœ ì €ëª…;ë°©ì´ë¦„:ìœ ì €ëª…;...;
+			}else if(cmd.equals(ChatProtocol2.CHAT)) { // CHAT:ë°©ì´ë¦„:ìœ ì €ëª…;ì±„íŒ…ë‚´ìš© -> ì±„íŒ…ë°©ì—ì„œì˜ ì±„íŒ…ì„ ê´€ë¦¬
+				//cmd = CHAT | data = ë°©ì´ë¦„:ìœ ì €ëª…;ì±„íŒ…ë‚´ìš©
+				System.out.println("CHATì§„ì…");
 				System.out.println("data = "+ data);
 				int idx1 = data.indexOf(ChatProtocol2.MODE);
-				String Rn = data.substring(0,idx1); // ¹æÀÌ¸§
-				String str = data.substring(idx1+1); // À¯Àú¸í;Ã¤ÆÃ³»¿ë
+				String Rn = data.substring(0,idx1); // ë°©ì´ë¦„
+				String str = data.substring(idx1+1); // ìœ ì €ëª…;ì±„íŒ…ë‚´ìš©
 				System.out.println(Rn +" "+ str);
 				int idx2 = str.indexOf(";");
-				String Un = str.substring(0,idx2);  // À¯Àú¸í
-				String msg = str.substring(idx2+1); // Ã¤ÆÃ³»¿ë
+				String Un = str.substring(0,idx2);  // ìœ ì €ëª…
+				String msg = str.substring(idx2+1); // ì±„íŒ…ë‚´ìš©
 				System.out.println(msg);
 				sendAllMessage(ChatProtocol2.MESSAGE+ChatProtocol2.MODE+Rn+
-						ChatProtocol2.MODE+"["+Un+"]"+msg); // MESSAGE:Ã¤ÆÃ¹æÀÌ¸§:[id]+Ã¤ÆÃ³»¿ë
+						ChatProtocol2.MODE+"["+Un+"]"+msg); // MESSAGE:ì±„íŒ…ë°©ì´ë¦„:[id]+ì±„íŒ…ë‚´ìš©
 				System.out.println(Rn+
 						ChatProtocol2.MODE+"["+id+"]:"+msg);
-			}else if(cmd.equals(ChatProtocol2.ROOMLIST)) {	// ROOMLIST:À¯Àú¸í;Ã¤ÆÃ¹æÀÌ¸§ -> Ã¤ÆÃ¹æÀ» »ı¼º
+			}else if(cmd.equals(ChatProtocol2.ROOMLIST)) {	// ROOMLIST:ìœ ì €ëª…;ì±„íŒ…ë°©ì´ë¦„ -> ì±„íŒ…ë°©ì„ ìƒì„±
 				System.out.println("first:" + data);
 				idx = data.indexOf(';');
 				cmd = data.substring(0, idx);//ccc
-				data = data.substring(idx+1);//ÀÌ°Å ¹¹¾ß?
-				for(int i = 0;roomlist.length>i;i++) {		// ¼­¹ö¿¡ Ã¤ÆÃ¹æ ÀÌ¸§ ÀúÀå
+				data = data.substring(idx+1);//ì´ê±° ë­ì•¼?
+				for(int i = 0;roomlist.length>i;i++) {		// ì„œë²„ì— ì±„íŒ…ë°© ì´ë¦„ ì €ì¥
 					if(roomlist[i] == null) {
 						roomlist[i] = data;
 						break;
 					}
 				}
 				System.out.println(ChatProtocol2.ROOMLIST+ChatProtocol2.MODE+data);
-				sendAllMessage(ChatProtocol2.ROOMLIST+ChatProtocol2.MODE+data);//ROOMLIST:ÀÌ°Å¹¹¾ß
-			}else if(cmd.equals(ChatProtocol2.ID)) {		// »õ·Î µé¾î¿ÔÀ»¶§ Ã¤ÆÃ¹æ ¸®½ºÆ® »õ·Î°íÄ§
+				sendAllMessage(ChatProtocol2.ROOMLIST+ChatProtocol2.MODE+data);//ROOMLIST:ì´ê±°ë­ì•¼
+			}else if(cmd.equals(ChatProtocol2.ID)) {		// ìƒˆë¡œ ë“¤ì–´ì™”ì„ë•Œ ì±„íŒ…ë°© ë¦¬ìŠ¤íŠ¸ ìƒˆë¡œê³ ì¹¨
 				String roomreset = "";
 				for(int i = 0;roomlist.length>i;i++) {
 					if(roomlist[i] != null) {
@@ -176,7 +176,7 @@ public class MChatServer {
 				}
 				System.out.println(roomreset);
 				sendAllMessage(ChatProtocol2.RESETLIST+ChatProtocol2.MODE+roomreset);
-			}else if(cmd.equals(ChatProtocol2.DELETELIST)) {	// DELETELIST:Ã¤ÆÃ¹æÀÌ¸§ -> ¹æÀåÀÌ Ã¤ÆÃ¹æÀ» Á¾·áÇßÀ»¶§ Ã¤ÆÃ¹æ¸®½ºÆ®¿¡¼­ Á¦°Å
+			}else if(cmd.equals(ChatProtocol2.DELETELIST)) {	// DELETELIST:ì±„íŒ…ë°©ì´ë¦„ -> ë°©ì¥ì´ ì±„íŒ…ë°©ì„ ì¢…ë£Œí–ˆì„ë•Œ ì±„íŒ…ë°©ë¦¬ìŠ¤íŠ¸ì—ì„œ ì œê±°
 				for(int i = 0;roomlist.length>i;i++) {
 					if(data.equals(roomlist[i])) {
 						sendAllMessage(ChatProtocol2.DELETELIST+ChatProtocol2.MODE+roomlist[i]);
@@ -185,22 +185,22 @@ public class MChatServer {
 				}
 			}else if(cmd.equals(ChatProtocol2.DELETUSER)) {
 				int idx1 = 0;
-				System.out.println("Ã¤ÆÃ¹æÀ¯Àú¸®½ºÆ® »èÁ¦ÁøÀÔ:"+data);
+				System.out.println("ì±„íŒ…ë°©ìœ ì €ë¦¬ìŠ¤íŠ¸ ì‚­ì œì§„ì…:"+data);
 				for(int i = 0;roomUser.length > i; i++) {
 					if(roomUser[i] != null) {
 						System.out.println(roomUser[i]);
 						idx1 = roomUser[i].indexOf(ChatProtocol2.MODE);
 						String Rn = roomUser[i].substring(0,idx1);
-						System.out.println("»èÁ¦Áß"+data+" "+Rn);
+						System.out.println("ì‚­ì œì¤‘"+data+" "+Rn);
 						if(data.equals(Rn)) {
-						System.out.println("»èÁ¦¿Ï·á");
+						System.out.println("ì‚­ì œì™„ë£Œ");
 						roomUser[i] = null;
 						System.out.println(roomUser);
 						}
 					}
 				}
 			}
-			else if(cmd.equals(ChatProtocol2.EXIT)) { // EXIT:¹æÀÌ¸§:À¯Àú¸í -> À¯Àú°¡ Ã¤ÆÃ¹æÀ» ³ª°¬À»¶§ ¸í´Ü¿¡¼­ »èÁ¦
+			else if(cmd.equals(ChatProtocol2.EXIT)) { // EXIT:ë°©ì´ë¦„:ìœ ì €ëª… -> ìœ ì €ê°€ ì±„íŒ…ë°©ì„ ë‚˜ê°”ì„ë•Œ ëª…ë‹¨ì—ì„œ ì‚­ì œ
 				String resetUser = "";
 				int idx1 = data.indexOf(ChatProtocol2.MODE);
 				String Rn = data.substring(0,idx1);
@@ -216,7 +216,7 @@ public class MChatServer {
 					}
 				}
 				sendAllMessage(ChatProtocol2.ADDUSER+ChatProtocol2.MODE+Rn+ChatProtocol2.MODE+resetUser);
-				sendMessage(ChatProtocol2.EXIT+ChatProtocol2.MODE+Rn);//Ã¤ÆÃ¹æ Á¾·á½Ã ¿ÀºêÀèÆ® QR[]¹è¿­ »èÁ¦ ÇØ¾ßÇÔ
+				sendMessage(ChatProtocol2.EXIT+ChatProtocol2.MODE+Rn);//ì±„íŒ…ë°© ì¢…ë£Œì‹œ ì˜¤ë¸Œì­íŠ¸ QR[]ë°°ì—´ ì‚­ì œ í•´ì•¼í•¨
 			}
 		}
 		
@@ -230,6 +230,4 @@ public class MChatServer {
 		new MChatServer();
 	}
 }
-
-
 

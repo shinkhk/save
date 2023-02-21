@@ -7,19 +7,19 @@ public class ChatProtocol2 {
 	//(C->S) ID:aaa
 	public static final String ID = "ID";
 	
-	//(C->S) CHAT:πﬁ¥¬æ∆¿Ãµ;∏ﬁºº¡ˆ ex)CHAT:bbb;π‰∏‘¿⁄
-	//(S->C) CHAT:∫∏≥ª¥¬æ∆¿Ãµ;∏ﬁºº¡ˆ ex)CHAT:aaa;π‰∏‘¿⁄
+	//(C->S) CHAT:Î∞õÎäîÏïÑÏù¥Îîî;Î©îÏÑ∏ÏßÄ ex)CHAT:bbb;Î∞•Î®πÏûê
+	//(S->C) CHAT:Î≥¥ÎÇ¥ÎäîÏïÑÏù¥Îîî;Î©îÏÑ∏ÏßÄ ex)CHAT:aaa;Î∞•Î®πÏûê
 	public static final String CHAT = "CHAT";
 	
-	//(C->S) CHATALL:∏ﬁºº¡ˆ
-	//(S->C) CHATALL:[∫∏≥ª¥¬æ∆¿Ãµ]∏ﬁºº¡ˆ
+	//(C->S) CHATALL:Î©îÏÑ∏ÏßÄ
+	//(S->C) CHATALL:[Î≥¥ÎÇ¥ÎäîÏïÑÏù¥Îîî]Î©îÏÑ∏ÏßÄ
 	public static final String CHATALL = "CHATALL";
 	
-	//(C->S) MESSAGE:πﬁ¥¬æ∆¿Ãµ;¬ ¡ˆ≥ªøÎ ex)MESSAGE:bbb;π‰∏‘¿⁄
-	//(S->C) MESSAGE:∫∏≥ª¥¬æ∆¿Ãµ;¬ ¡ˆ≥ªøÎ ex)MESSAGE:aaa;π‰∏‘¿⁄
+	//(C->S) MESSAGE:Î∞õÎäîÏïÑÏù¥Îîî;Ï™ΩÏßÄÎÇ¥Ïö© ex)MESSAGE:bbb;Î∞•Î®πÏûê
+	//(S->C) MESSAGE:Î≥¥ÎÇ¥ÎäîÏïÑÏù¥Îîî;Ï™ΩÏßÄÎÇ¥Ïö© ex)MESSAGE:aaa;Î∞•Î®πÏûê
 	public static final String MESSAGE = "MESSAGE";
 	
-	//(S->C) CHATLIST:aaa;bbb;ccc;»´±Êµø;
+	//(S->C) CHATLIST:aaa;bbb;ccc;ÌôçÍ∏∏Îèô;
 	public static final String CHATLIST = "CHATLIST";
 	
 	public static final String MODE = ":";
@@ -38,8 +38,4 @@ public class ChatProtocol2 {
 	
 	public static final String DELETUSER = "DELETUSER";
 }
-
-
-
-
 

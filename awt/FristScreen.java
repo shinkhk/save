@@ -40,18 +40,18 @@ public class FristScreen extends JFrame {
 		
 		panel.add(la1 = new JLabel("ID"));
 		panel.add(tf1 = new TextField("",10));
-		panel.add(la2 =new JLabel("ºñ¹Ð¹øÈ£"));
+		panel.add(la2 =new JLabel("ï¿½ï¿½Ð¹ï¿½È£"));
 		panel.add(tf2 = new TextField("",10));
-		tf2.setEchoChar('¡Ü');	
-		//#1 ¸ÞÀÎ) ¶óº§,ÅØ½ºÆ® À§Ä¡ ¼³Á¤
+
+		//#1 ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½,ï¿½Ø½ï¿½Æ® ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
 		la1.setBounds(300,500,20,30);
 		tf1.setBounds(330,500, 90,30);
 		la2.setBounds(430, 500, 60, 30);
 		tf2.setBounds(490, 500, 90, 30);		
 
-		btn1 = new JButton("·Î±×ÀÎ"); 
-		btn2= new JButton("»õ·Î¸¸µé±â"); 
-		// ¸ÞÀÎ) ¹öÆ° À§Ä¡,Å©±â ¼³Á¤
+		btn1 = new JButton("ï¿½Î±ï¿½ï¿½ï¿½"); 
+		btn2= new JButton("ï¿½ï¿½ï¿½Î¸ï¿½ï¿½ï¿½ï¿½"); 
+		// ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½Æ° ï¿½ï¿½Ä¡,Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		btn1.setBounds(630, 500, 100, 30);
 		btn2.setBounds(780, 500, 100, 30);			
 		panel.add(btn1);

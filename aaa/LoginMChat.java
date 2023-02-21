@@ -14,9 +14,6 @@ import java.net.Socket;
 
 import javax.swing.JFrame;
 
-import net.ChatProtocol3;
-
-
 public class LoginMChat extends JFrame implements ActionListener{
 
 	TextField idTf;
@@ -42,7 +39,7 @@ public class LoginMChat extends JFrame implements ActionListener{
 		logo.setFont(new Font("Dialog", Font.BOLD, 50));
 		idl = new Label("ID");
 		idTf = new TextField("aaa");
-		logBtn = new Button("∑Œ±◊¿Œ");
+		logBtn = new Button("Î°úÍ∑∏Ïù∏");
 		logo.setBounds(100, 50, 250, 100);
 		idl.setBounds(150, 200, 50, 20);
 		idTf.setBounds(200, 200, 100, 20);
@@ -62,11 +59,10 @@ public class LoginMChat extends JFrame implements ActionListener{
 			Object obj = e.getSource();
 			if(obj==logBtn) {
 				if(sock==null) {
-					//√≥¿ΩΩ√µµ
 					connect();
 				}
 				id = idTf.getText().trim();
-				out.println(ChatProtocol3.ID+ChatProtocol3.MODE+
+				out.println(ChatProtocol2.ID+ChatProtocol2.MODE+
 						id);
 				dispose();
 				new MChatClient(in, out, id);
