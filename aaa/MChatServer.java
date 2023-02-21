@@ -13,6 +13,7 @@ public class MChatServer {
 	ServerSocket server;
 	Vector<ClientThread2> vc;
 	String roomlist[] = new String[100];
+	String roomUser[] = new String[100];
 	
 	public MChatServer() {
 		try {
@@ -71,6 +72,9 @@ public class MChatServer {
 		return ct;
 	}
 	
+	
+	
+	
 	class ClientThread2 extends Thread{
 		
 		Socket sock;
@@ -112,7 +116,29 @@ public class MChatServer {
 			int idx = line.indexOf(ChatProtocol2.MODE);
 			String cmd = line.substring(0, idx);//CHATALL
 			String data = line.substring(idx+1);//오늘은 목요일입니다.
-			if(cmd.equals(ChatProtocol2.CHAT)) { // CHAT:방이름:유저명;채팅내용 -> 채팅방에서의 채팅을 관리
+			if(cmd.equals(ChatProtocol2.ENTERROOM)) { // ENTERROOM:방이름:유저명;입장하였습니다 -> 채팅방 입장 메세지, 들어와있는 유저명 관리
+				sendAllMessage(line);
+				int idx1 = data.indexOf(ChatProtocol2.MODE);
+				String Rn = data.substring(0,idx1);
+				String str = data.substring(idx1+1);
+				int idx2 = str.indexOf(";");
+				String Un = str.substring(0,idx2);
+				String resetUser = "";
+				for(int i = 0;roomUser.length > i; i++) {
+					if(roomUser[i] == null) {
+						roomUser[i] = Rn+ChatProtocol2.MODE+Un;//방이름:유저명
+						break;
+					}
+				}
+				for(int i = 0;roomUser.length > i; i++) {
+					if(roomUser[i] != null) {
+						resetUser += roomUser[i]+";"; //방이름:유저명;방이름:유저명;방이름:유저명;...;
+					}
+				}
+				System.out.println(resetUser);
+				sendAllMessage(ChatProtocol2.ADDUSER+ChatProtocol2.MODE+Rn+ChatProtocol2.MODE+resetUser);
+				//ADDUSER:방이름:방이름:유저명;방이름:유저명;방이름:유저명;...;
+			}else if(cmd.equals(ChatProtocol2.CHAT)) { // CHAT:방이름:유저명;채팅내용 -> 채팅방에서의 채팅을 관리
 				//cmd = CHAT | data = 방이름:유저명;채팅내용
 				System.out.println("CHAT진입");
 				System.out.println("data = "+ data);
@@ -121,15 +147,14 @@ public class MChatServer {
 				String str = data.substring(idx1+1); // 유저명;채팅내용
 				System.out.println(Rn +" "+ str);
 				int idx2 = str.indexOf(";");
-				String Un = str.substring(0,idx2); 
-				String msg = str.substring(idx2+1);
+				String Un = str.substring(0,idx2);  // 유저명
+				String msg = str.substring(idx2+1); // 채팅내용
 				System.out.println(msg);
 				sendAllMessage(ChatProtocol2.MESSAGE+ChatProtocol2.MODE+Rn+
 						ChatProtocol2.MODE+"["+Un+"]"+msg); // MESSAGE:채팅방이름:[id]+채팅내용
 				System.out.println(Rn+
 						ChatProtocol2.MODE+"["+id+"]:"+msg);
 			}else if(cmd.equals(ChatProtocol2.ROOMLIST)) {	// ROOMLIST:유저명;채팅방이름 -> 채팅방을 생성
-				//ccc;이거 뭐야?
 				System.out.println("first:" + data);
 				idx = data.indexOf(';');
 				cmd = data.substring(0, idx);//ccc
@@ -151,13 +176,47 @@ public class MChatServer {
 				}
 				System.out.println(roomreset);
 				sendAllMessage(ChatProtocol2.RESETLIST+ChatProtocol2.MODE+roomreset);
-			}else if(cmd.equals(ChatProtocol2.DELETELIST)) {	// DELETELIST:채팅방이름 방장이 채팅방을 종료했을때 그 채팅방리스트에서 제거
+			}else if(cmd.equals(ChatProtocol2.DELETELIST)) {	// DELETELIST:채팅방이름 -> 방장이 채팅방을 종료했을때 채팅방리스트에서 제거
 				for(int i = 0;roomlist.length>i;i++) {
 					if(data.equals(roomlist[i])) {
 						sendAllMessage(ChatProtocol2.DELETELIST+ChatProtocol2.MODE+roomlist[i]);
 						roomlist[i] = null;
 					}
 				}
+			}else if(cmd.equals(ChatProtocol2.DELETUSER)) {
+				int idx1 = 0;
+				System.out.println("채팅방유저리스트 삭제진입:"+data);
+				for(int i = 0;roomUser.length > i; i++) {
+					if(roomUser[i] != null) {
+						System.out.println(roomUser[i]);
+						idx1 = roomUser[i].indexOf(ChatProtocol2.MODE);
+						String Rn = roomUser[i].substring(0,idx1);
+						System.out.println("삭제중"+data+" "+Rn);
+						if(data.equals(Rn)) {
+						System.out.println("삭제완료");
+						roomUser[i] = null;
+						System.out.println(roomUser);
+						}
+					}
+				}
+			}
+			else if(cmd.equals(ChatProtocol2.EXIT)) { // EXIT:방이름:유저명 -> 유저가 채팅방을 나갔을때 명단에서 삭제
+				String resetUser = "";
+				int idx1 = data.indexOf(ChatProtocol2.MODE);
+				String Rn = data.substring(0,idx1);
+				for(int i = 0;roomUser.length > i; i++) {
+					if(data.equals(roomUser[i])) {
+						roomUser[i] = null;
+						for(int j = 0;roomUser.length > j; j++) {
+							if(roomUser[j] != null) {
+								resetUser += roomUser[j]+";";
+							}
+						}
+						break;
+					}
+				}
+				sendAllMessage(ChatProtocol2.ADDUSER+ChatProtocol2.MODE+Rn+ChatProtocol2.MODE+resetUser);
+				sendMessage(ChatProtocol2.EXIT+ChatProtocol2.MODE+Rn);//채팅방 종료시 오브잭트 QR[]배열 삭제 해야함
 			}
 		}
 		

@@ -35,7 +35,7 @@ implements ActionListener, Runnable{
 	JButton bt1, bt2, bt3, bt4;
 	JTextField tf1, tf2, tf3;
 	TextArea area;
-	List list,listcopy;
+	List list;
 	Socket sock;
 	BufferedReader in;
 	PrintWriter out;
@@ -43,8 +43,7 @@ implements ActionListener, Runnable{
 	String id;
 	MChatQuestionRoom[] QR = new MChatQuestionRoom[100];
 	boolean flag = false;
-	
-	
+
 	public MChatClient(BufferedReader in, PrintWriter out, String id) {
 		setSize(450, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -123,7 +122,7 @@ implements ActionListener, Runnable{
 		}else if(obj == bt3) { // 답변하기
 			if(list.getSelectedItem()!=null) {
 			String str = list.getSelectedItem();
-			creatRoom(str);
+			enterRoom(str);
 			}
 		}else if(obj == tf3) {
 			sendMessage(tf3.getText());
@@ -138,9 +137,53 @@ implements ActionListener, Runnable{
 		String data = line.substring(idx+1);
 		if(cmd.equals(ChatProtocol2.ROOMLIST)) {
 			addRoomList(data);}
-		else if(cmd.equals(ChatProtocol2.MESSAGE)) { // MESSAGE:방이름:[id]+채팅내용
+		else if(cmd.equals(ChatProtocol2.ENTERROOM)) {	// ENTERROOM:방이름:유저명;님이 입장하였습니다
+			int idx1 = data.indexOf(ChatProtocol2.MODE);
+			String Rn = data.substring(0, idx1); //방이름
+			String str = data.substring(idx1+1); //유저명;님이 입장하였습니다
+			int idx2 = str.indexOf(";");
+			String Un = str.substring(0, idx2);	//유저명
+			String str1 = str.substring(idx2+1); //님이 입장하였습니다
+			for(int i = 0; QR.length > i; i++) {
+				if(QR[i] != null) {
+					if(Rn.equals(QR[i].roomname)){
+					QR[i].addText("["+Un+"] " + str1);
+					}
+				}
+				
+			}
+		}else if(cmd.equals(ChatProtocol2.ADDUSER)) {
+			// 방이름:방이름:유저명;방이름:유저명;방이름:유저명;...;
+			int idx1 = data.indexOf(ChatProtocol2.MODE);
+			String Rn = data.substring(0, idx1); //방이름
+			String str = data.substring(idx1+1); //방이름:유저명;방이름:유저명;방이름:유저명;...;
+			for(int i = 0; QR.length > i; i++) {
+				if(QR[i] != null) {
+					if(Rn.equals(QR[i].roomname)){
+						QR[i].resetList(str);
+						break;
+					}
+				}
+
+			}
+//			String userList[] = new String[100];
+//			StringTokenizer st = new StringTokenizer(data, ";");
+//			while(st.hasMoreTokens()) {
+//				int i = 0;
+//				userList[i] = st.nextToken(); // 방이름:방이름:유저명 / 방이름:유저명 / 방이름:유저명/ ... /
+//				i++;
+//			}
+//			for(int i = 0 ;userList.length > i;i++) {
+//				int idx2 = userList[i].indexOf(ChatProtocol2.MODE);
+//				String Rn1 = userList[i].substring(0,idx2);
+//				String Un = userList[i].substring(idx2+1);
+//				if(QR[i].roomname.equals(Rn)) {
+//					QR[i].resetList(Un);
+//				}
+//			}
+
+		}else if(cmd.equals(ChatProtocol2.MESSAGE)) { // MESSAGE:방이름:[id]+채팅내용
 			System.out.println("메세지진입");
-			System.out.println(QR[0].roomname);
 			int idx1 = data.indexOf(ChatProtocol2.MODE);
 			String Rn = data.substring(0, idx1); // 방이름
 			System.out.println("Rn:"+Rn);
@@ -168,22 +211,47 @@ implements ActionListener, Runnable{
 				list.add(st.nextToken());
 			}
 		}else if(cmd.equals(ChatProtocol2.DELETELIST)) {
+			list.remove(data);
 			for(int i = 0; QR.length > i; i++) {
 				if(QR[i] != null) {
 					if(data.equals(QR[i].roomname)){
 					System.out.println("채팅한 방번호 = " + i);
 					QR[i].addText("*********OWNER EXIT*********");
+					QR[i].addText("Leave the room in 3 seconds");
+					try {
+						QR[i].addText("3");
+						Thread.sleep(1000);
+						QR[i].addText("2");
+						Thread.sleep(1000);
+						QR[i].addText("1");
+						Thread.sleep(1000);
+						sendMessage(ChatProtocol2.DELETUSER+ChatProtocol2.MODE+QR[i].roomname);
+						QR[i].dispose();
+						QR[i] = null;
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					break;
 					}
 				}
 
 			}
-			list.remove(data);
+		}else if(cmd.equals(ChatProtocol2.EXIT)) {	//EXIT:방이름
+			for(int i = 0; QR.length > i; i++) {
+				if(QR[i] != null) {
+					if(data.equals(QR[i].roomname)) {
+						QR[i] = null;
+						break;
+					}
+				}
+			}
 		}
 	}//--routine
 	
 	class MyDialog extends Dialog implements ActionListener{
 		Button b1, b2;
 		TextField tf;
+		TextArea ta;
 		public MyDialog(Frame owner, String title, boolean modal) {
 			super(owner, title, modal);
 			setLayout(new BorderLayout());
@@ -202,6 +270,7 @@ implements ActionListener, Runnable{
 			b2.addActionListener(this);
 			tf.addActionListener(this);//Enter 이벤트
 		}
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Object obj = e.getSource();
@@ -224,6 +293,18 @@ implements ActionListener, Runnable{
 			if(QR[i] == null) {
 				System.out.println("만들어진 방번호 = " + i);
 				QR[i] = new MChatQuestionRoom(roomname, in, out, id, orner);
+				QR[i].enterRoom();
+				break;
+			}
+		}
+	}
+	
+	public void enterRoom(String roomname) {
+		for(int i = 0; QR.length > i; i++) {
+			if(QR[i] == null) {
+				System.out.println("만들어진 방번호 = " + i);
+				QR[i] = new MChatQuestionRoom(roomname, in, out, id);
+				QR[i].enterRoom();
 				break;
 			}
 		}

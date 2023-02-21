@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.StringTokenizer;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -30,7 +31,7 @@ implements ActionListener{
 	PrintWriter out;
 	Socket sock;
 	
-	public MChatQuestionRoom(String roomname,BufferedReader in, PrintWriter out, String id) {
+	public MChatQuestionRoom(String roomname,BufferedReader in, PrintWriter out, String id) {	// 답변할 사람의 채팅방
 		System.out.println("방생성");
 		setSize(450, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -40,7 +41,7 @@ implements ActionListener{
 		this.id = id;
 		setTitle(this.roomname);
 		// //////////////////////////////////////////////////////////////////////////////////////////
-		ta = new TextArea("["+ id +"] enter \n");
+		ta = new TextArea();
 		ta.setBackground(Color.DARK_GRAY);
 		ta.setForeground(Color.PINK);
 		ta.setEditable(false);
@@ -69,7 +70,7 @@ implements ActionListener{
 		validate();
 	}
 	
-	public MChatQuestionRoom(String roomname,BufferedReader in, PrintWriter out, String id, int orner) {
+	public MChatQuestionRoom(String roomname,BufferedReader in, PrintWriter out, String id, int orner) { // 질문 한사람의 채팅방
 		System.out.println("방생성");
 		setSize(450, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,7 +80,7 @@ implements ActionListener{
 		this.id = id;
 		setTitle(this.roomname);
 		// //////////////////////////////////////////////////////////////////////////////////////////
-		ta = new TextArea("["+ id +"] enter \n");
+		ta = new TextArea();
 		ta.setBackground(Color.DARK_GRAY);
 		ta.setForeground(Color.PINK);
 		ta.setEditable(false);
@@ -120,6 +121,7 @@ implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
 		if(obj == bt2) {	//나가기
+			sendMessage(ChatProtocol2.EXIT+ChatProtocol2.MODE+roomname+ChatProtocol2.MODE+id);
 			dispose();
 		}else if(obj == bt1 || obj == tf) {
 			String msg = tf.getText();
@@ -128,6 +130,7 @@ implements ActionListener{
 			tf.requestFocus();
 		}else if(obj == bt3) {
 			sendMessage(ChatProtocol2.DELETELIST+ChatProtocol2.MODE+roomname);
+			sendMessage(ChatProtocol2.EXIT+ChatProtocol2.MODE+roomname+ChatProtocol2.MODE+id);
 			dispose();
 		}
 	}
@@ -142,6 +145,29 @@ implements ActionListener{
 			ta.append(data+"\n");
 		}
 	}//--routine
+	
+	public void enterRoom() {
+		String msg =  id + ";Enter room";
+		sendMessage(ChatProtocol2.ENTERROOM+ChatProtocol2.MODE+roomname+ChatProtocol2.MODE+msg); // ENTERROOM:방이름:유저명;님이 입장하였습니다
+	}
+	
+	public void resetList(String str) {
+		String addList = "";
+		userlist.removeAll();
+		StringTokenizer st = new StringTokenizer(str, ";");	//방이름:유저명;방이름:유저명;방이름:유저명;...;
+		while(st.hasMoreTokens()) {
+			addList = st.nextToken();
+			System.out.println("addlist"+addList);
+			int idx = addList.indexOf(ChatProtocol2.MODE);
+			String rn = addList.substring(0, idx);
+			String un = addList.substring(idx+1);
+			System.out.println(rn+" "+un);
+			if(rn.equals(roomname)) {
+				userlist.add(un);
+			}
+		
+		}
+	}
 	
 	public void addText(String msg) {
 		ta.append(msg+"\n");
