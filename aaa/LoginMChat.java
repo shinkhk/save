@@ -23,7 +23,7 @@ public class LoginMChat extends JFrame implements ActionListener{
 	BufferedReader in;
 	PrintWriter out;
 	String id;
-	String host = "127.0.0.1";
+	String host = "113.198.238.111";
 	int port = 8002;
 	String title = "MChat0.1";
 	

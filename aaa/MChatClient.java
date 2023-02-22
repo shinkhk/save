@@ -5,6 +5,7 @@ import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Label;
@@ -22,8 +23,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.StringTokenizer;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -41,22 +44,24 @@ implements ActionListener, Runnable{
 	PrintWriter out;
 	String listTitle = "*******질문 명단*******";
 	String id;
+	JLabel picture;
 	MChatQuestionRoom[] QR = new MChatQuestionRoom[100];
 	boolean flag = false;
+	
+	ImageIcon img=new ImageIcon("./Button_Image/addpay.jpg");
+	ImageIcon imgexit=new ImageIcon("./Button_Image/exit.jpg");
 
 	public MChatClient(BufferedReader in, PrintWriter out, String id) {
-		setSize(450, 500);
+		setSize(850,700);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.id = id;
 		this.in = in;
 		this.out = out;
 		setTitle(this.id + "님 안녕하세요");
 		// //////////////////////////////////////////////////////////////////////////////////////////
-		area = new TextArea("좌석번호:05               남은시간:00:00:00\n");
-		area.setBackground(Color.DARK_GRAY);
-		area.setForeground(Color.PINK);
-		area.setEditable(false);
-		add(BorderLayout.CENTER, area);
+		JPanel p1 = new JPanel();
+		UserMainUIPanel(p1);
+		getContentPane().add(p1);
 		// /////////////////////////////////////////////////////////////////////////////////////////
 		JPanel p2 = new JPanel();
 		p2.setLayout(new BorderLayout());
@@ -74,13 +79,6 @@ implements ActionListener, Runnable{
 		p2.add(BorderLayout.SOUTH, p3);
 		add(BorderLayout.EAST, p2);
 		// ///////////////////////////////////////////////////////////////////////////////////////////
-		JPanel p4 = new JPanel();
-		tf3 = new JTextField("", 30);
-		bt4 = new JButton("send");
-		p4.add(tf3);
-		p4.add(bt4);
-		tf3.addActionListener(this);
-		add(BorderLayout.SOUTH, p4);
 		
 		new Thread(this).start();
 		setVisible(true);
@@ -146,7 +144,7 @@ implements ActionListener, Runnable{
 			String str1 = str.substring(idx2+1); //님이 입장하였습니다
 			for(int i = 0; QR.length > i; i++) {
 				if(QR[i] != null) {
-					if(Rn.equals(QR[i].roomname)){
+					if(Rn.equals(QR[i].roomName)){
 					QR[i].addText("["+Un+"] " + str1);
 					}
 				}
@@ -159,7 +157,7 @@ implements ActionListener, Runnable{
 			String str = data.substring(idx1+1); //방이름:유저명;방이름:유저명;방이름:유저명;...;
 			for(int i = 0; QR.length > i; i++) {
 				if(QR[i] != null) {
-					if(Rn.equals(QR[i].roomname)){
+					if(Rn.equals(QR[i].roomName)){
 						QR[i].resetList(str);
 						break;
 					}
@@ -194,7 +192,7 @@ implements ActionListener, Runnable{
 //			}
 			for(int i = 0; QR.length > i; i++) {
 				if(QR[i] != null) {
-					if(Rn.equals(QR[i].roomname)){
+					if(Rn.equals(QR[i].roomName)){
 					System.out.println("채팅한 방번호 = " + i);
 					QR[i].addText(msg);
 					}
@@ -214,11 +212,11 @@ implements ActionListener, Runnable{
 			list.remove(data);
 			for(int i = 0; QR.length > i; i++) {
 				if(QR[i] != null) {
-					if(data.equals(QR[i].roomname)){
+					if(data.equals(QR[i].roomName)){
 					System.out.println("채팅한 방번호 = " + i);
 					QR[i].addText("*********OWNER EXIT*********");
 					QR[i].addText("Leave the room in 3 seconds");
-					sendMessage(ChatProtocol2.DELETUSER+ChatProtocol2.MODE+QR[i].roomname);
+					sendMessage(ChatProtocol2.DELETUSER+ChatProtocol2.MODE+QR[i].roomName);
 					try {
 						QR[i].addText("3");
 						Thread.sleep(1000);
@@ -239,7 +237,7 @@ implements ActionListener, Runnable{
 		}else if(cmd.equals(ChatProtocol2.EXIT)) {	//EXIT:방이름
 			for(int i = 0; QR.length > i; i++) {
 				if(QR[i] != null) {
-					if(data.equals(QR[i].roomname)) {
+					if(data.equals(QR[i].roomName)) {
 						QR[i] = null;
 						break;
 					}
@@ -271,12 +269,28 @@ implements ActionListener, Runnable{
 			tf.addActionListener(this);//Enter 이벤트
 		}
 		
+		public MyDialog(Frame owner, String title, boolean modal, String msg) {
+			super(owner, title, modal);
+			setLayout(new BorderLayout());
+			ta = new TextArea(msg);
+			Panel p = new Panel();
+			
+			b2 = new Button("확인");
+			
+			p.add(b2);
+			
+			add(p,BorderLayout.SOUTH);
+			add(ta,BorderLayout.CENTER);
+			b2.addActionListener(this);
+		}
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Object obj = e.getSource();
 			if(obj == b1 || obj == tf) {
 				String str = tf.getText().trim();
-				sendMessage(ChatProtocol2.ROOMLIST+ChatProtocol2.MODE+id+";"+str);//ROOMRIST:ccc;이거 뭐야?
+//				sendMessage(ChatProtocol2.ROOMLIST+ChatProtocol2.MODE+id+";"+str);//ROOMRIST:ccc;이거 뭐야?
+				
 				creatRoom(str);
 				dispose();//사라지는 기능
 			}else if(obj == b2) {
@@ -289,9 +303,28 @@ implements ActionListener, Runnable{
 //		QR[0] = new MChatQuestionRoom(roomname, in, out, id);
 //		System.out.println(QR[0].roomname);
 		int orner = 1;
+		String msg = "이미 있는 질문 입니다.";
+		for(int i = 0; QR.length > i; i++) {
+			if(QR[i] != null) {
+				if(roomname.equals(QR[i].roomName)) {
+					MyDialog md = new MyDialog(this, "질문을 입력하세요", true, msg);
+					//Dialog의 창크기
+					int width = 200;
+					int height = 200;
+					//int x = fx+getWidth()/2-width/2;
+					//int y = fy+getHeight()/2-height/2;
+					md.setSize(width, height);
+					md.setLocationRelativeTo(this);
+					//md.setBounds(x, y, width, height);
+					md.setVisible(true);
+					return;
+				}
+			}
+		}
 		for(int i = 0; QR.length > i; i++) {
 			if(QR[i] == null) {
 				System.out.println("만들어진 방번호 = " + i);
+				sendMessage(ChatProtocol2.ROOMLIST+ChatProtocol2.MODE+id+";"+roomname);
 				QR[i] = new MChatQuestionRoom(roomname, in, out, id, orner);
 				QR[i].enterRoom();
 				break;
@@ -300,6 +333,26 @@ implements ActionListener, Runnable{
 	}
 	
 	public void enterRoom(String roomname) {
+		
+		String msg = "이미 열려있는 방입니다.";
+		for(int i = 0; QR.length > i; i++) {
+			if(QR[i] != null) {
+				if(roomname.equals(QR[i].roomName)) {
+					MyDialog md = new MyDialog(this, "질문을 입력하세요", true, msg);
+					//Dialog의 창크기
+					int width = 300;
+					int height = 200;
+					//int x = fx+getWidth()/2-width/2;
+					//int y = fy+getHeight()/2-height/2;
+					md.setSize(width, height);
+					md.setLocationRelativeTo(this);
+					//md.setBounds(x, y, width, height);
+					md.setVisible(true);
+					return;
+				}
+			}
+		}
+		
 		for(int i = 0; QR.length > i; i++) {
 			if(QR[i] == null) {
 				System.out.println("만들어진 방번호 = " + i);
@@ -308,6 +361,87 @@ implements ActionListener, Runnable{
 				break;
 			}
 		}
+	}
+	
+	public void UserMainUIPanel(JPanel panel)
+	{
+		panel.setLayout(null);
+		
+		Font font=new Font("맑은 고딕", Font.PLAIN, 17);
+		
+		JLabel roomNumber=new JLabel("방번호:");
+		roomNumber.setBounds(0,0,100,50);
+		roomNumber.setFont(font);
+		panel.add(roomNumber);
+		
+		
+		JLabel remaintime=new JLabel("남은 시간:");
+		remaintime.setBounds(400,0,100,50);
+		remaintime.setFont(font);
+		panel.add(remaintime);
+		
+		//관리자 전화번호 뜨게하기
+
+		JLabel ManagerPhone = new JLabel("관리자 연락처:");
+		ManagerPhone.setBounds(0, 40, 300, 50);
+		ManagerPhone.setFont(font);
+		panel.add(ManagerPhone);
+		
+		
+		//관리자이메일 뜨게하기
+
+		JLabel managerEmail=new JLabel("관리자이메일:");
+		managerEmail.setBounds(400,40,300,50);
+		managerEmail.setFont(font);
+		panel.add(managerEmail);
+		
+		picture = new JLabel();
+        picture.setIcon(new ImageIcon("./Button_Image/book.jpg"));
+        picture.setBounds(0, 100, 900,365);
+        panel.add(picture);
+        
+        JButton addpay=new JButton(img);
+        addpay.setBounds(0,465,350,200);
+        panel.add(addpay);
+        
+        JButton exit=new JButton(imgexit);
+        exit.setBounds(350,465,350,200);
+        panel.add(exit);
+        
+        
+        
+        panel.setBackground(new Color(230,239,255));
+        
+        //추가결제 기능
+        addpay.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				
+			}
+		});
+        
+        //퇴실 기능
+        exit.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				for(int i = 0;QR.length > i; i++) {
+					if(QR[i] != null) {
+						if(QR[i].owner == 1) {
+							sendMessage(ChatProtocol2.DELETELIST+ChatProtocol2.MODE+QR[i].roomName);
+							sendMessage(ChatProtocol2.EXIT+ChatProtocol2.MODE+QR[i].roomName+ChatProtocol2.MODE+id);
+						}else {
+							sendMessage(ChatProtocol2.EXIT+ChatProtocol2.MODE+QR[i].roomName+ChatProtocol2.MODE+id);
+						}
+					}
+				}
+				System.exit(0);
+			}
+		});
+        
+		
 	}
 	
 	
